@@ -1,0 +1,14 @@
+{
+  "name": "pkg5-warehouse-internet-system",
+  "version": "2.0.0",
+  "description": "Internet-ready warehouse management system for Package 5 Development Company",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "express": "^4.21.2",
+    "cookie-parser": "^1.4.7"
+  }
+}

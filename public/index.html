@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>شركة تطوير الحزمة الخامسة - نظام إدارة المستودع</title>
+  <style>
+    :root{--bg:#f4f7f6;--card:#fff;--line:#dde5dd;--text:#19311b;--muted:#617065;--brand:#2f5d2f;--brand2:#5b8f2d;--danger:#b42318;--ok:#157347;--warn:#b54708;--shadow:0 10px 24px rgba(24,55,24,.08)}
+    *{box-sizing:border-box;font-family:Tahoma,Arial,sans-serif}
+    body{margin:0;background:var(--bg);color:var(--text)}
+    .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#eef5ea,#ffffff)}
+    .login-card,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+    .login-card{width:min(440px,100%);padding:24px}
+    .brand{display:flex;align-items:center;gap:16px;margin-bottom:18px}
+    .brand img{width:84px;height:84px;object-fit:contain;border-radius:12px;background:#fff}
+    .brand h1{margin:0;font-size:28px;color:var(--brand)}
+    .brand p{margin:6px 0 0;color:var(--muted)}
+    input,select,textarea,button{width:100%;padding:11px 12px;border-radius:12px;border:1px solid var(--line);font-size:14px}
+    button{background:var(--brand);border:none;color:#fff;font-weight:700;cursor:pointer}
+    button.light{background:#eef4ee;color:var(--text);border:1px solid var(--line)}
+    button.danger{background:var(--danger)}
+    button.ok{background:var(--ok)}
+    button.warn{background:var(--warn)}
+    .msg{margin-top:12px;padding:10px 12px;border-radius:10px;display:none}
+    .msg.show{display:block}.msg.error{background:#fef3f2;color:var(--danger)}.msg.success{background:#ecfdf3;color:var(--ok)}
+    .hidden{display:none!important}
+    header{background:linear-gradient(135deg,var(--brand),#214a21);color:#fff;padding:16px 0;box-shadow:var(--shadow)}
+    .container{max-width:1400px;margin:0 auto;padding:0 16px}
+    .header-row{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .header-brand{display:flex;align-items:center;gap:14px}.header-brand img{width:62px;height:62px;object-fit:contain;background:#fff;border-radius:12px}
+    .header-brand h2{margin:0;font-size:26px}.header-brand small{opacity:.92}
+    .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+    .card{padding:16px}.metric{font-size:30px;font-weight:700;margin-top:8px}.muted{color:var(--muted)}
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.tab{width:auto;padding:10px 16px;background:#fff;color:var(--text);border:1px solid var(--line)}.tab.active{background:var(--brand);color:#fff}
+    .layout{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}@media(max-width:1050px){.layout{grid-template-columns:1fr}}
+    .grid-2,.grid-3{display:grid;gap:10px}.grid-2{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(3,1fr)}@media(max-width:760px){.grid-2,.grid-3{grid-template-columns:1fr}}
+    label{display:block;margin-bottom:6px;font-weight:700}
+    .inline{display:flex;gap:8px;flex-wrap:wrap}.inline>*{width:auto}
+    table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid var(--line);padding:10px 8px;text-align:right;font-size:13px;vertical-align:top}th{background:#f8faf8;position:sticky;top:0}
+    .table-wrap{max-height:470px;overflow:auto}.badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:#eef4ee;color:var(--brand)}.badge.low{background:#fff0e5;color:var(--warn)}.badge.ok{background:#ecfdf3;color:var(--ok)}
+    .section-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}.section-title h3{margin:0}
+    .footer-note{font-size:12px;color:var(--muted);margin-top:10px}
+  </style>
+</head>
+<body>
+  <div id="loginView" class="login-wrap">
+    <div class="login-card">
+      <div class="brand">
+        <img src="/logo.jpg" alt="Logo" />
+        <div>
+          <h1>شركة تطوير الحزمة الخامسة</h1>
+          <p>Package 5 Development Company</p>
+        </div>
+      </div>
+      <h3 style="margin-top:0">تسجيل الدخول إلى نظام المستودع</h3>
+      <div style="margin-bottom:10px"><label>اسم المستخدم</label><input id="loginUsername" value="admin" /></div>
+      <div><label>كلمة المرور</label><input id="loginPassword" type="password" value="Admin@12345" /></div>
+      <div class="inline" style="margin-top:14px"><button id="loginBtn">دخول</button></div>
+      <div class="footer-note">هذه نسخة جاهزة للنشر على الإنترنت بعد رفعها إلى استضافة أو VPS وربط الدومين.</div>
+      <div id="loginMsg" class="msg"></div>
+    </div>
+  </div>
+
+  <div id="appView" class="hidden">
+    <header>
+      <div class="container header-row">
+        <div class="header-brand">
+          <img src="/logo.jpg" alt="Logo" />
+          <div>
+            <h2>شركة تطوير الحزمة الخامسة - نظام إدارة المستودع</h2>
+            <small>إدارة الأصناف، الوارد، المنصرف، الموردين، والتقارير</small>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="light" id="exportBtn">نسخة احتياطية</button>
+          <button class="danger" id="logoutBtn">تسجيل الخروج</button>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="cards">
+        <div class="card"><div class="muted">عدد الأصناف</div><div class="metric" id="mTotalItems">0</div></div>
+        <div class="card"><div class="muted">إجمالي الكميات</div><div class="metric" id="mTotalQty">0</div></div>
+        <div class="card"><div class="muted">أصناف منخفضة المخزون</div><div class="metric" id="mLowStock">0</div></div>
+        <div class="card"><div class="muted">حركات اليوم</div><div class="metric" id="mTransToday">0</div></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" data-tab="itemsTab">الأصناف</button>
+        <button class="tab" data-tab="transactionsTab">الإضافة والصرف</button>
+        <button class="tab" data-tab="suppliersTab">الموردون</button>
+      </div>
+
+      <section id="itemsTab" class="tab-panel">
+        <div class="layout">
+          <div class="card">
+            <div class="section-title"><h3>إضافة / تعديل صنف</h3><span class="badge" id="itemMode">إضافة جديد</span></div>
+            <form id="itemForm">
+              <input type="hidden" id="itemId" />
+              <div class="grid-3">
+                <div><label>كود الصنف</label><input id="code" required /></div>
+                <div><label>اسم الصنف</label><input id="name" required /></div>
+                <div><label>الوحدة</label><input id="unit" required /></div>
+              </div>
+              <div class="grid-3" style="margin-top:10px">
+                <div><label>التصنيف</label><input id="category" /></div>
+                <div><label>الحد الأدنى</label><input id="min_qty" type="number" step="0.01" value="0" /></div>
+                <div><label>الرصيد الافتتاحي</label><input id="qty" type="number" step="0.01" value="0" /></div>
+              </div>
+              <div class="grid-3" style="margin-top:10px">
+                <div><label>الموقع داخل المستودع</label><input id="location" /></div>
+                <div><label>المورد</label><input id="supplier" /></div>
+                <div><label>ملاحظات</label><input id="notes" /></div>
+              </div>
+              <div class="inline" style="margin-top:14px">
+                <button type="submit">حفظ الصنف</button>
+                <button type="button" class="light" id="resetItemForm">تفريغ الحقول</button>
+              </div>
+              <div id="itemMsg" class="msg"></div>
+            </form>
+          </div>
+          <div class="card">
+            <div class="section-title">
+              <h3>قائمة الأصناف</h3>
+              <div class="toolbar">
+                <input id="searchItems" placeholder="بحث..." style="width:240px" />
+                <button type="button" class="light" id="refreshItems">تحديث</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>الكود</th><th>الصنف</th><th>الوحدة</th><th>الرصيد</th><th>الحد الأدنى</th><th>الحالة</th><th>إجراء</th></tr></thead>
+                <tbody id="itemsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="transactionsTab" class="tab-panel hidden">
+        <div class="layout">
+          <div class="card">
+            <div class="section-title"><h3>حركة إضافة / صرف</h3></div>
+            <form id="transactionForm">
+              <div class="grid-2">
+                <div><label>الصنف</label><select id="trans_item_id" required></select></div>
+                <div><label>نوع الحركة</label><select id="trans_type"><option value="IN">إضافة للمخزون</option><option value="OUT">صرف من المخزون</option></select></div>
+              </div>
+              <div class="grid-3" style="margin-top:10px">
+                <div><label>الكمية</label><input id="trans_qty" type="number" step="0.01" required /></div>
+                <div><label>رقم المرجع / الإذن</label><input id="reference_no" /></div>
+                <div><label>المستلم / الطالب</label><input id="requested_by" /></div>
+              </div>
+              <div class="grid-2" style="margin-top:10px">
+                <div><label>التاريخ</label><input id="trans_date" type="date" required /></div>
+                <div><label>ملاحظات</label><input id="trans_notes" /></div>
+              </div>
+              <div class="inline" style="margin-top:14px"><button class="ok" type="submit">حفظ الحركة</button></div>
+              <div id="transMsg" class="msg"></div>
+            </form>
+          </div>
+          <div class="card">
+            <div class="section-title"><h3>آخر الحركات</h3></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>التاريخ</th><th>النوع</th><th>الصنف</th><th>الكمية</th><th>المرجع</th><th>الطالب</th><th>المنفذ</th></tr></thead>
+                <tbody id="transactionsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="suppliersTab" class="tab-panel hidden">
+        <div class="layout">
+          <div class="card">
+            <div class="section-title"><h3>إضافة / تعديل مورد</h3><span class="badge" id="supplierMode">إضافة جديد</span></div>
+            <form id="supplierForm">
+              <input type="hidden" id="supplierId" />
+              <div class="grid-2"><div><label>اسم المورد</label><input id="supplier_name" required /></div><div><label>الجوال</label><input id="supplier_phone" /></div></div>
+              <div class="grid-2" style="margin-top:10px"><div><label>البريد الإلكتروني</label><input id="supplier_email" /></div><div><label>العنوان</label><input id="supplier_address" /></div></div>
+              <div style="margin-top:10px"><label>ملاحظات</label><textarea id="supplier_notes"></textarea></div>
+              <div class="inline" style="margin-top:14px"><button type="submit">حفظ المورد</button><button type="button" class="light" id="resetSupplierForm">تفريغ الحقول</button></div>
+              <div id="supplierMsg" class="msg"></div>
+            </form>
+          </div>
+          <div class="card">
+            <div class="section-title"><h3>قائمة الموردين</h3><button class="light" id="refreshSuppliers">تحديث</button></div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>المورد</th><th>الجوال</th><th>البريد</th><th>العنوان</th><th>إجراء</th></tr></thead>
+                <tbody id="suppliersTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="footer-note" style="padding:12px 0 24px">النظام الحالي جاهز للرفع على استضافة أو VPS. لأمان الإنترنت الفعلي، فعّل HTTPS وغيّر كلمة مرور المدير والسر السري في ملف البيئة.</div>
+    </div>
+  </div>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const api = {
+  async request(url, options = {}) {
+    const res = await fetch(url, { headers: { 'Content-Type': 'application/json' }, credentials: 'include', ...options });
+    const text = await res.text();
+    let data = {};
+    try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
+    if (!res.ok) throw new Error(data.error || 'حدث خطأ أثناء الاتصال بالسيرفر');
+    return data;
+  },
+  get: (url) => api.request(url),
+  post: (url, body) => api.request(url, { method: 'POST', body: JSON.stringify(body) }),
+  put: (url, body) => api.request(url, { method: 'PUT', body: JSON.stringify(body) }),
+  del: (url) => api.request(url, { method: 'DELETE' })
+};
+
+let items = [];
+let suppliers = [];
+
+function showMsg(id, text, type='success') { const el=$(id); el.textContent=text; el.className=`msg show ${type}`; setTimeout(()=>el.className='msg',3000); }
+function today(){ return new Date().toISOString().slice(0,10); }
+$('trans_date').value = today();
+
+function setView(authenticated){ $('loginView').classList.toggle('hidden', authenticated); $('appView').classList.toggle('hidden', !authenticated); }
+
+async function checkSession(){
+  try { await api.get('/api/me'); setView(true); await bootApp(); } catch { setView(false); }
+}
+
+$('loginBtn').onclick = async () => {
+  try {
+    await api.post('/api/login', { username: $('loginUsername').value.trim(), password: $('loginPassword').value });
+    setView(true); await bootApp();
+  } catch (e) { showMsg('loginMsg', e.message, 'error'); }
+};
+$('logoutBtn').onclick = async () => { await api.post('/api/logout', {}); setView(false); };
+$('exportBtn').onclick = () => { window.location.href = '/api/export'; };
+
+document.querySelectorAll('.tab').forEach(btn => btn.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+  $(btn.dataset.tab).classList.remove('hidden');
+});
+
+async function loadDashboard(){ const d=await api.get('/api/dashboard'); $('mTotalItems').textContent=d.totalItems; $('mTotalQty').textContent=d.totalQty; $('mLowStock').textContent=d.lowStock; $('mTransToday').textContent=d.transToday; }
+async function loadItems(q=''){ items=await api.get('/api/items'+(q?`?q=${encodeURIComponent(q)}`:'')); $('itemsTable').innerHTML=items.map(x=>`<tr><td>${x.code}</td><td>${x.name}</td><td>${x.unit}</td><td>${x.qty}</td><td>${x.min_qty}</td><td><span class="badge ${x.status}">${x.status==='low'?'منخفض':'جيد'}</span></td><td><div class="inline"><button class="light" onclick="editItem(${x.id})">تعديل</button><button class="danger" onclick="deleteItem(${x.id})">حذف</button></div></td></tr>`).join(''); $('trans_item_id').innerHTML=items.map(x=>`<option value="${x.id}">${x.code} - ${x.name} (${x.qty})</option>`).join(''); }
+async function loadSuppliers(){ suppliers=await api.get('/api/suppliers'); $('suppliersTable').innerHTML=suppliers.map(s=>`<tr><td>${s.name}</td><td>${s.phone||''}</td><td>${s.email||''}</td><td>${s.address||''}</td><td><div class="inline"><button class="light" onclick="editSupplier(${s.id})">تعديل</button><button class="danger" onclick="deleteSupplier(${s.id})">حذف</button></div></td></tr>`).join(''); }
+async function loadTransactions(){ const rows=await api.get('/api/transactions'); $('transactionsTable').innerHTML=rows.map(t=>`<tr><td>${t.date}</td><td>${t.trans_type==='IN'?'إضافة':'صرف'}</td><td>${t.item_code} - ${t.item_name}</td><td>${t.qty} ${t.item_unit}</td><td>${t.reference_no||''}</td><td>${t.requested_by||''}</td><td>${t.created_by||''}</td></tr>`).join(''); }
+function resetItemForm(){ $('itemForm').reset(); $('itemId').value=''; $('min_qty').value=0; $('qty').value=0; $('itemMode').textContent='إضافة جديد'; }
+function resetSupplierForm(){ $('supplierForm').reset(); $('supplierId').value=''; $('supplierMode').textContent='إضافة جديد'; }
+window.editItem = (id)=>{ const x=items.find(i=>i.id===id); if(!x)return; $('itemId').value=x.id; $('code').value=x.code; $('name').value=x.name; $('unit').value=x.unit; $('category').value=x.category||''; $('min_qty').value=x.min_qty; $('qty').value=x.qty; $('location').value=x.location||''; $('supplier').value=x.supplier||''; $('notes').value=x.notes||''; $('itemMode').textContent='تعديل'; window.scrollTo({top:0,behavior:'smooth'}); };
+window.deleteItem = async (id)=>{ if(!confirm('حذف الصنف؟'))return; try{ await api.del('/api/items/'+id); await refreshAll(); }catch(e){ alert(e.message);} };
+window.editSupplier = (id)=>{ const s=suppliers.find(i=>i.id===id); if(!s)return; $('supplierId').value=s.id; $('supplier_name').value=s.name; $('supplier_phone').value=s.phone||''; $('supplier_email').value=s.email||''; $('supplier_address').value=s.address||''; $('supplier_notes').value=s.notes||''; $('supplierMode').textContent='تعديل'; };
+window.deleteSupplier = async (id)=>{ if(!confirm('حذف المورد؟'))return; try{ await api.del('/api/suppliers/'+id); await loadSuppliers(); }catch(e){ alert(e.message);} };
+$('resetItemForm').onclick = resetItemForm; $('resetSupplierForm').onclick = resetSupplierForm; $('refreshItems').onclick = ()=>loadItems($('searchItems').value.trim()); $('refreshSuppliers').onclick = loadSuppliers; $('searchItems').addEventListener('input', e=>loadItems(e.target.value.trim()));
+$('itemForm').onsubmit = async (e)=>{ e.preventDefault(); const payload={code:$('code').value.trim(),name:$('name').value.trim(),unit:$('unit').value.trim(),category:$('category').value.trim(),min_qty:Number($('min_qty').value||0),qty:Number($('qty').value||0),location:$('location').value.trim(),supplier:$('supplier').value.trim(),notes:$('notes').value.trim()}; try{ if($('itemId').value){ await api.put('/api/items/'+$('itemId').value,payload); showMsg('itemMsg','تم تحديث الصنف بنجاح'); } else { await api.post('/api/items',payload); showMsg('itemMsg','تم حفظ الصنف بنجاح'); } resetItemForm(); await refreshAll(); }catch(err){ showMsg('itemMsg',err.message,'error'); } };
+$('supplierForm').onsubmit = async (e)=>{ e.preventDefault(); const payload={name:$('supplier_name').value.trim(),phone:$('supplier_phone').value.trim(),email:$('supplier_email').value.trim(),address:$('supplier_address').value.trim(),notes:$('supplier_notes').value.trim()}; try{ if($('supplierId').value){ await api.put('/api/suppliers/'+$('supplierId').value,payload); showMsg('supplierMsg','تم تحديث المورد بنجاح'); } else { await api.post('/api/suppliers',payload); showMsg('supplierMsg','تم حفظ المورد بنجاح'); } resetSupplierForm(); await loadSuppliers(); }catch(err){ showMsg('supplierMsg',err.message,'error'); } };
+$('transactionForm').onsubmit = async (e)=>{ e.preventDefault(); const payload={item_id:Number($('trans_item_id').value),trans_type:$('trans_type').value,qty:Number($('trans_qty').value||0),reference_no:$('reference_no').value.trim(),requested_by:$('requested_by').value.trim(),date:$('trans_date').value,notes:$('trans_notes').value.trim()}; try{ await api.post('/api/transactions',payload); $('transactionForm').reset(); $('trans_date').value=today(); showMsg('transMsg','تم حفظ الحركة بنجاح'); await refreshAll(); }catch(err){ showMsg('transMsg',err.message,'error'); } };
+async function refreshAll(){ await Promise.all([loadDashboard(), loadItems($('searchItems').value.trim()), loadSuppliers(), loadTransactions()]); }
+async function bootApp(){ resetItemForm(); resetSupplierForm(); await refreshAll(); }
+checkSession();
+</script>
+</body>
+</html>
